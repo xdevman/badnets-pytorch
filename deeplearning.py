@@ -29,9 +29,10 @@ def train_one_epoch(data_loader, model, criterion, optimizer, loss_mode, device)
 
         loss.backward()
         optimizer.step()
-        running_loss += loss
+        # accumulate a plain float: keeping the tensor keeps its autograd graph alive
+        running_loss += loss.item()
     return {
-            "loss": running_loss.item() / len(data_loader),
+            "loss": running_loss / len(data_loader),
             }
 
 def evaluate_badnets(data_loader_val_clean, data_loader_val_poisoned, model, device):

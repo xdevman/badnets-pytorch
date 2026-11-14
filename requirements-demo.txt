@@ -1,0 +1,14 @@
+# Modern, pinned environment used for the demo (Python 3.12, CUDA 12.1 wheels).
+# The original requirements.txt pins 2019-era versions that do not build on
+# Python 3.12; these are API-compatible replacements.
+#
+# torch / torchvision must come from the PyTorch index (see setup_demo.sh):
+#   uv pip install --index-url https://download.pytorch.org/whl/cu121 torch==2.5.1 torchvision==0.20.1
+torch==2.5.1
+torchvision==0.20.1
+numpy==1.26.4
+pandas==2.2.3
+scikit-learn==1.5.2
+matplotlib==3.9.2
+pillow==10.4.0
+tqdm==4.66.5

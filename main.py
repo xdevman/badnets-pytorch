@@ -19,13 +19,13 @@ parser.add_argument('--nb_classes', default=10, type=int, help='number of the cl
 parser.add_argument('--load_local', action='store_true', help='train model or directly load model (default true, if you add this param, then load trained local model to evaluate the performance)')
 parser.add_argument('--loss', default='mse', help='Which loss function to use (mse or cross, default: mse)')
 parser.add_argument('--optimizer', default='sgd', help='Which optimizer to use (sgd or adam, default: sgd)')
-parser.add_argument('--epochs', default=100, help='Number of epochs to train backdoor model, default: 100')
+parser.add_argument('--epochs', default=100, type=int, help='Number of epochs to train backdoor model, default: 100')
 parser.add_argument('--batch_size', type=int, default=64, help='Batch size to split dataset, default: 64')
 parser.add_argument('--num_workers', type=int, default=0, help='Batch size to split dataset, default: 64')
 parser.add_argument('--lr', type=float, default=0.01, help='Learning rate of the model, default: 0.001')
 parser.add_argument('--download', action='store_true', help='Do you want to download data ( default false, if you add this param, then download)')
 parser.add_argument('--data_path', default='./data/', help='Place to load dataset (default: ./dataset/)')
-parser.add_argument('--device', default='cpu', help='device to use for training / testing (cpu, or cuda:1, default: cpu)')
+parser.add_argument('--device', default='auto', help='device to use for training / testing (auto, cpu, cuda, or cuda:1; default: auto = cuda if available)')
 # poison settings
 parser.add_argument('--poisoning_rate', type=float, default=0.1, help='poisoning portion (float, range from 0 to 1, default: 0.1)')
 parser.add_argument('--trigger_label', type=int, default=1, help='The NO. of trigger label (int, range from 0 to 10, default: 0)')
@@ -37,10 +37,15 @@ args = parser.parse_args()
 def main():
     print("{}".format(args).replace(', ', ',\n'))
 
-    if re.match('cuda:\d', args.device):
+    if re.match(r'cuda:\d', args.device):
         cuda_num = args.device.split(':')[1]
         os.environ['CUDA_VISIBLE_DEVICES'] = cuda_num
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu") # if you're using MBP M1, you can also use "mps"
+        device = torch.device('cuda')
+    elif args.device in ('cuda', 'cpu'):
+        device = torch.device(args.device)
+    else:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu") # if you're using MBP M1, you can also use "mps"
+    print("# device: %s" % device)
 
     # create related path
     pathlib.Path("./checkpoints/").mkdir(parents=True, exist_ok=True)

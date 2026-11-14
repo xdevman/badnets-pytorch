@@ -1,9 +1,40 @@
 # README
 
-A simple PyTorch implementations of `Badnets: Identifying vulnerabilities in the machine learning model supply chain` on MNIST and CIFAR10.
+A simple PyTorch implementation of `Badnets: Identifying vulnerabilities in the machine learning model supply chain` on MNIST and CIFAR10.
 
+This fork runs on a current stack (Python 3.12, PyTorch 2.5) and ships a ready-to-show
+demo. The original 2019 pins in `requirements.txt` no longer install on modern
+Python, so use the setup script below instead.
 
-## Install
+## Quick start (tested: Python 3.12, torch 2.5.1, CUDA 12.1 and CPU)
+
+```bash
+git clone https://github.com/xdevman/badnets-pytorch.git
+cd badnets-pytorch
+./setup_demo.sh            # uv creates .venv, installs torch + deps, downloads MNIST/CIFAR10
+source .venv/bin/activate
+```
+
+Then run either of these:
+
+```bash
+# Visual demo: same images clean vs. with the trigger, plus TCA / ASR.
+# Saves demo_output/<dataset>_badnet_demo.png (takes a few seconds, no training).
+python demo.py --dataset MNIST --n 6
+
+# Metrics only, printed in the terminal.
+python main.py --dataset MNIST --load_local
+```
+
+Expected results with the shipped checkpoints: MNIST TCA 0.9808 / ASR 0.9994,
+CIFAR10 TCA 0.5067 / ASR 0.9673.
+
+No NVIDIA GPU? `TORCH_INDEX=https://download.pytorch.org/whl/cpu ./setup_demo.sh`
+
+Full runbook — manual install without uv, live training, troubleshooting, list of
+changes: [README-DEMO.md](./README-DEMO.md).
+
+## Install (original 2019 pins, kept for reference)
 
 ```
 $ git clone https://github.com/verazuo/badnets-pytorch.git
